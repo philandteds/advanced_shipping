@@ -59,7 +59,11 @@ class advancedShippingHandler
 		$cost = 0;
 		if( isset( $rule['per_item_cost'] ) ) {
 			$itemsCount = 0;
-			$items      = eZProductCollection::fetch( $productCollectionID )->itemList();
+			$items      = array();
+			$products   = eZProductCollection::fetch( $productCollectionID );
+			if( $products instanceof eZProductCollection ) {
+				$items = eZProductCollection::fetch( $productCollectionID )->itemList();
+			}
 			foreach( $items as $item ) {
 				$itemsCount += $item->attribute( 'item_count' );
 			}
