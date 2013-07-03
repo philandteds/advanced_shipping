@@ -79,11 +79,17 @@ class advancedShippingHandler
 			$cost = min( $cost, (float) $rule['max_cost'] );
 		}
 
+		$VAT   = 0;
+		$items = eZProductCollection::fetch( $productCollectionID );;
+		if( count( $items ) > 0 ) {
+			$VAT = $items->attribute( 'vat_value' );
+		}
+
 		return array(
 			'description' => $rule['description'],
 			'cost'        => $cost,
-			'vat_value'   => false,
-			'is_vat_inc'  => 1
+			'vat_value'   => $VAT,
+			'is_vat_inc'  => 0
 		);
 	}
 
