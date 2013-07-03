@@ -80,9 +80,9 @@ class advancedShippingHandler
 		}
 
 		$VAT   = 0;
-		$items = eZProductCollection::fetch( $productCollectionID );;
+		$items = eZProductCollection::fetch( $productCollectionID )->itemList();
 		if( count( $items ) > 0 ) {
-			$VAT = $items->attribute( 'vat_value' );
+			$VAT = $items[0]->attribute( 'vat_value' );
 		}
 
 		return array(
