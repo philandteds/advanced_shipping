@@ -98,6 +98,14 @@ class advancedShippingHandler {
                 $items = eZProductCollection::fetch( $productCollectionID )->itemList();
             }
             foreach( $items as $item ) {
+                $object = $item->attribute( 'contentobject' );
+                if( $object instanceof eZContentObject ) {
+                    $dataMap = $object->attribute( 'data_map' );
+                    if( isset( $dataMap['free_shipping'] ) && (bool) $dataMap['free_shipping']->attribute( 'content' ) ) {
+                        continue;
+                    }
+                }
+
                 $itemsCount += $item->attribute( 'item_count' );
             }
             $cost = $itemsCount * (float) $rule['per_item_cost'];
