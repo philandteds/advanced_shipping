@@ -62,9 +62,21 @@ class countryShippingHandler {
             $VAT = $items[0]->attribute( 'vat_value' );
         }
 
+        $hasNonFreeProducts = false;
+        foreach( $items as $item ) {
+            $object = $item->attribute( 'contentobject' );
+            if( $object instanceof eZContentObject ) {
+                $dataMap = $object->attribute( 'data_map' );
+                if( isset( $dataMap['free_shipping'] ) === false || (bool) $dataMap['free_shipping']->attribute( 'content' ) !== true ) {
+                    $hasNonFreeProducts = true;
+                    break;
+                }
+            }
+        }
+
         return array(
             'description' => $rule['description'],
-            'cost'        => $rule['shipping_cost'],
+            'cost'        => $hasNonFreeProducts ? $rule['shipping_cost'] : 0,
             'vat_value'   => $VAT,
             'is_vat_inc'  => 0
         );
