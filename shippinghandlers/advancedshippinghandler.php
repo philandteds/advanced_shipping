@@ -151,7 +151,7 @@ class advancedShippingHandler {
         }
         arsort( $requiredOrderTotals );
 
-        $total = eZBasket::currentBasket()->attribute( 'total_inc_vat' );
+        $total = eZBasket::currentBasket()->attribute( 'total_ex_vat' );
         foreach( $requiredOrderTotals as $ruleName => $requiredOrderTotal ) {
             if( $total >= $requiredOrderTotal ) {
                 return $this->rules[$ruleName];

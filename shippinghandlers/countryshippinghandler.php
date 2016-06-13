@@ -109,7 +109,7 @@ class countryShippingHandler {
             $requiredOrderTotals = $this->getRequiredOrderTotals( $accountInfo['s_country'] );
         }
 
-        $total = $basket->attribute( 'total_inc_vat' );
+        $total = $basket->attribute( 'total_ex_vat' );
         foreach( $requiredOrderTotals as $ruleName => $requiredOrderTotal ) {
             if( $total >= $requiredOrderTotal ) {
                 return $this->rules[$ruleName];
