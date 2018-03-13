@@ -89,14 +89,15 @@ class advancedShippingHandler {
             return null;
         }
 
+        $itemsCount = 0;
+        $items      = array();
+        $products   = eZProductCollection::fetch( $productCollectionID );
+        if( $products instanceof eZProductCollection ) {
+            $items = eZProductCollection::fetch( $productCollectionID )->itemList();
+        }
+
         $cost = 0;
         if( isset( $rule['per_item_cost'] ) ) {
-            $itemsCount = 0;
-            $items      = array();
-            $products   = eZProductCollection::fetch( $productCollectionID );
-            if( $products instanceof eZProductCollection ) {
-                $items = eZProductCollection::fetch( $productCollectionID )->itemList();
-            }
             foreach( $items as $item ) {
                 $object = $item->attribute( 'contentobject' );
                 if( $object instanceof eZContentObject ) {
@@ -110,7 +111,24 @@ class advancedShippingHandler {
             }
             $cost = $itemsCount * (float) $rule['per_item_cost'];
         } else {
-            $cost = (float) $rule['default_cost'];
+
+            $itemsInCollectionCount = count($items);
+            $itemsWithFreeShippingCount = 0;
+
+            foreach( $items as $item ) {
+                $object = $item->attribute('contentobject');
+                if ($object instanceof eZContentObject) {
+                    $dataMap = $object->attribute('data_map');
+                    if (isset($dataMap['free_shipping']) && (bool)$dataMap['free_shipping']->attribute('content')) {
+                        $itemsWithFreeShippingCount ++;
+                    }
+                }
+            }
+
+            if ($itemsWithFreeShippingCount != $itemsInCollectionCount) {
+                $cost = (float) $rule['default_cost'];
+            }
+
         }
 
         if( isset( $rule['min_cost'] ) ) {
